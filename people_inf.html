@@ -1,0 +1,311 @@
+import React, { useState, useEffect } from 'react';
+import { Wind, CloudRain, Brain, Calculator, Waves, BookOpen, User, ArrowRight, MousePointer2 } from 'lucide-react';
+
+const App = () => {
+  const [activeSection, setActiveSection] = useState('home');
+
+  const scrollToSection = (id) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+      setActiveSection(id);
+    }
+  };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = ['home', 'richardson', 'fourier', 'episode'];
+      const scrollPosition = window.scrollY + 100;
+
+      for (const section of sections) {
+        const element = document.getElementById(section);
+        if (element && element.offsetTop <= scrollPosition && (element.offsetTop + element.offsetHeight) > scrollPosition) {
+          setActiveSection(section);
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-slate-50 text-slate-800 font-sans selection:bg-blue-200">
+      {/* Navigation */}
+      <nav className="fixed top-0 left-0 right-0 bg-white/90 backdrop-blur-md shadow-sm z-50 transition-all duration-300">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center space-x-2 cursor-pointer" onClick={() => scrollToSection('home')}>
+              <Wind className="h-6 w-6 text-blue-600" />
+              <span className="font-bold text-xl tracking-tight text-slate-900">Meteo<span className="text-blue-600">Math</span></span>
+            </div>
+            <div className="hidden md:flex space-x-8">
+              {['Home', 'Richardson', 'Fourier', 'Episode'].map((item) => (
+                <button
+                  key={item}
+                  onClick={() => scrollToSection(item.toLowerCase())}
+                  className={`text-sm font-medium transition-colors duration-200 ${
+                    activeSection === item.toLowerCase() ? 'text-blue-600' : 'text-slate-500 hover:text-slate-900'
+                  }`}
+                >
+                  {item}
+                </button>
+              ))}
+            </div>
+            {/* Mobile Menu Button - Simplified */}
+            <div className="md:hidden">
+              <div className="w-6 h-0.5 bg-slate-600 mb-1.5"></div>
+              <div className="w-6 h-0.5 bg-slate-600 mb-1.5"></div>
+              <div className="w-6 h-0.5 bg-slate-600"></div>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      {/* Hero Section */}
+      <section id="home" className="pt-32 pb-20 px-4 bg-gradient-to-b from-blue-50 to-white overflow-hidden relative">
+        <div className="absolute top-0 right-0 -mr-20 -mt-20 opacity-10">
+          <Calculator size={400} />
+        </div>
+        <div className="max-w-4xl mx-auto text-center relative z-10">
+          <div className="inline-block px-3 py-1 mb-4 text-xs font-semibold tracking-wider text-blue-600 uppercase bg-blue-100 rounded-full">
+            수리물리학 & 기상학
+          </div>
+          <h1 className="text-4xl md:text-6xl font-extrabold text-slate-900 mb-6 leading-tight">
+            무한급수가 그리는<br />
+            <span className="text-blue-600">하늘의 지도</span>
+          </h1>
+          <p className="text-lg md:text-xl text-slate-600 mb-10 max-w-2xl mx-auto leading-relaxed">
+            칠판 위의 수학이 어떻게 바람이 되고 비가 되는지,<br />
+            기상학의 역사를 바꾼 두 거장의 이야기를 소개합니다.
+          </p>
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <button 
+              onClick={() => scrollToSection('richardson')}
+              className="px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-lg hover:bg-blue-700 transition transform hover:-translate-y-1 flex items-center justify-center gap-2"
+            >
+              탐험 시작하기 <ArrowRight size={18} />
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Richardson Section */}
+      <section id="richardson" className="py-24 bg-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <div className="grid md:grid-cols-2 gap-16 items-center">
+            
+            {/* Content */}
+            <div className="order-2 md:order-1">
+              <div className="flex items-center gap-2 mb-4">
+                <Brain className="text-blue-500" />
+                <span className="font-semibold text-blue-500">수치 예보의 아버지</span>
+              </div>
+              <h2 className="text-3xl md:text-4xl font-bold mb-6 text-slate-900">루이스 프라이 리처드슨</h2>
+              <p className="text-slate-600 mb-6 text-lg leading-relaxed">
+                우리가 배우는 <strong>테일러 급수(Taylor Series)</strong>를 이용해 현대 기상 예보의 기초인 
+                유한차분법을 정립했습니다. 연속적인 미분을 컴퓨터가 계산할 수 있는 사칙연산으로 바꾸어 
+                내일의 날씨를 계산하려 했습니다.
+              </p>
+              
+              <div className="bg-slate-50 border border-slate-200 p-6 rounded-xl shadow-sm mb-6 font-serif">
+                <p className="text-sm text-slate-500 mb-2 font-sans border-b pb-2">테일러 급수를 이용한 유한차분 근사</p>
+                <div className="text-lg md:text-xl text-slate-800 text-center py-2 overflow-x-auto">
+                  u(x+h) = u(x) + h u'(x) + <span className="opacity-40 text-sm">...</span>
+                </div>
+                <div className="text-center text-blue-600 my-1">▼</div>
+                <div className="text-lg md:text-xl text-slate-800 text-center font-bold">
+                  <span className="italic">u'(x)</span> ≈ <div className="inline-block align-middle text-center mx-1"><div className="border-b border-slate-800">u(x+h) - u(x)</div><div>h</div></div>
+                </div>
+              </div>
+
+              <div className="bg-blue-50 p-4 rounded-lg text-sm text-blue-800 flex items-start gap-3">
+                <BookOpen className="shrink-0 w-5 h-5 mt-0.5" />
+                <p>
+                  <strong>핵심 기여:</strong> 나비에-스토크스 방정식과 같은 복잡한 대기 운동 방정식을 
+                  격자(Grid) 단위로 쪼개어 수치적으로 계산하는 방법론을 최초로 제시했습니다.
+                </p>
+              </div>
+            </div>
+
+            {/* Visual/Image Area */}
+            <div className="order-1 md:order-2 flex justify-center">
+              <div className="relative w-full max-w-md aspect-[4/5] bg-slate-200 rounded-2xl overflow-hidden shadow-2xl group">
+                {/* Fallback visual if image fails or placeholder */}
+                <div className="absolute inset-0 bg-gradient-to-br from-slate-800 to-slate-900 flex flex-col items-center justify-center text-white p-8 text-center">
+                   <User size={80} className="mb-4 text-slate-400" />
+                   <h3 className="text-2xl font-bold">Lewis Fry Richardson</h3>
+                   <p className="text-slate-400 mt-2">(1881 - 1953)</p>
+                   <div className="mt-8 grid grid-cols-4 gap-2 opacity-50 w-full px-8">
+                      {[...Array(16)].map((_, i) => (
+                        <div key={i} className="aspect-square border border-white/30 rounded-sm"></div>
+                      ))}
+                   </div>
+                   <p className="text-xs text-slate-500 mt-2">The Richardson Grid Concept</p>
+                </div>
+                {/* Interactive Grid Effect Overlay */}
+                <div className="absolute inset-0 bg-blue-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none grid grid-cols-6 grid-rows-6">
+                    {[...Array(36)].map((_, i) => (
+                        <div key={i} className="border border-blue-500/20"></div>
+                    ))}
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* Fourier Section */}
+      <section id="fourier" className="py-24 bg-slate-50">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <div className="grid md:grid-cols-2 gap-16 items-center">
+            
+            {/* Visual/Image Area */}
+            <div className="flex justify-center">
+               <div className="relative w-full max-w-md aspect-[4/5] bg-white rounded-2xl overflow-hidden shadow-2xl border border-slate-100">
+                <div className="absolute inset-0 bg-gradient-to-bl from-indigo-900 to-slate-800 flex flex-col items-center justify-center text-white p-8 text-center">
+                   <User size={80} className="mb-4 text-indigo-400" />
+                   <h3 className="text-2xl font-bold">Joseph Fourier</h3>
+                   <p className="text-indigo-300 mt-2">(1768 - 1830)</p>
+                   
+                   {/* Wave Animation Visualization */}
+                   <div className="mt-8 w-full h-24 flex items-center justify-center relative overflow-hidden">
+                      <svg viewBox="0 0 100 20" className="w-full h-full text-indigo-400/50 fill-current animate-pulse">
+                        <path d="M0 10 Q 25 20 50 10 T 100 10 V 20 H 0 Z"></path>
+                      </svg>
+                      <svg viewBox="0 0 100 20" className="w-full h-full text-white/30 fill-current absolute top-0 left-0" style={{animation: 'pulse 3s infinite'}}>
+                        <path d="M0 10 Q 12.5 0 25 10 T 50 10 T 75 10 T 100 10 V 20 H 0 Z"></path>
+                      </svg>
+                   </div>
+                   <p className="text-xs text-indigo-400 mt-2">Heat Conduction & Wave Analysis</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <CloudRain className="text-indigo-500" />
+                <span className="font-semibold text-indigo-500">온실 효과의 최초 제안자</span>
+              </div>
+              <h2 className="text-3xl md:text-4xl font-bold mb-6 text-slate-900">조제프 푸리에</h2>
+              <p className="text-slate-600 mb-6 text-lg leading-relaxed">
+                모든 주기적인 현상을 파동의 합으로 표현하는 <strong>푸리에 급수(Fourier Series)</strong>의 창시자입니다. 
+                그는 수학자였지만 열 이동을 연구하며 지구의 대기가 열을 가두는 '담요' 역할을 한다는 
+                <strong>온실 효과</strong>를 처음으로 과학적으로 추론했습니다.
+              </p>
+              
+              <div className="bg-white border border-slate-200 p-6 rounded-xl shadow-sm mb-6 font-serif">
+                <p className="text-sm text-slate-500 mb-2 font-sans border-b pb-2">푸리에 급수: 복잡함을 단순함의 합으로</p>
+                <div className="text-lg md:text-xl text-slate-800 text-center py-4">
+                  f(x) = <span className="text-lg">a<sub>0</sub></span>/2 + <span className="text-2xl align-middle">∑</span> [ a<sub>n</sub>cos(nx) + b<sub>n</sub>sin(nx) ]
+                </div>
+              </div>
+
+              <div className="bg-indigo-50 p-4 rounded-lg text-sm text-indigo-800 flex items-start gap-3">
+                <Waves className="shrink-0 w-5 h-5 mt-0.5" />
+                <p>
+                  <strong>현대 기상학 적용:</strong> 오늘날 대기의 거대한 흐름(로스비 파동 등)을 분석하고 
+                  기후 모델을 만들 때 푸리에 변환은 선택이 아닌 필수 도구입니다.
+                </p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* Episode Section */}
+      <section id="episode" className="py-24 bg-slate-900 text-white relative overflow-hidden">
+        {/* Background Decorative Elements */}
+        <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
+          <div className="absolute top-10 left-10 w-64 h-64 bg-blue-500 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-10 right-10 w-96 h-96 bg-purple-500 rounded-full blur-3xl"></div>
+        </div>
+
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 relative z-10">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-5xl font-bold mb-4">64,000명의 지휘자</h2>
+            <p className="text-blue-300 text-xl">루이스 프라이 리처드슨의 실패와 위대한 상상</p>
+          </div>
+
+          <div className="space-y-12">
+            {/* Story Card 1 */}
+            <div className="flex flex-col md:flex-row gap-6 bg-slate-800/50 p-6 rounded-2xl border border-slate-700 hover:border-blue-500 transition-colors">
+              <div className="md:w-1/4 flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-slate-700 pb-4 md:pb-0 md:pr-6">
+                <span className="text-4xl font-bold text-slate-600">01</span>
+                <span className="text-sm text-slate-400 mt-2">1차 세계대전</span>
+              </div>
+              <div className="md:w-3/4">
+                <h3 className="text-xl font-bold text-blue-400 mb-2">참호 속의 계산</h3>
+                <p className="text-slate-300 leading-relaxed">
+                  포탄이 날아드는 전쟁터에서 리처드슨은 구급차 부대원으로 복무했습니다. 
+                  동료들이 쉴 때, 그는 펜과 종이를 꺼내 손으로 직접 미분방정식을 풀었습니다. 
+                  독일 특정 지역의 6시간 후 날씨를 예측하기 위해 무려 <strong>6주 동안</strong> 계산에 매달렸습니다.
+                </p>
+              </div>
+            </div>
+
+            {/* Story Card 2 */}
+            <div className="flex flex-col md:flex-row gap-6 bg-slate-800/50 p-6 rounded-2xl border border-slate-700 hover:border-red-500 transition-colors">
+              <div className="md:w-1/4 flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-slate-700 pb-4 md:pb-0 md:pr-6">
+                <span className="text-4xl font-bold text-slate-600">02</span>
+                <span className="text-sm text-slate-400 mt-2">처참한 실패</span>
+              </div>
+              <div className="md:w-3/4">
+                <h3 className="text-xl font-bold text-red-400 mb-2">145hPa의 오차</h3>
+                <p className="text-slate-300 leading-relaxed">
+                  결과는 참담했습니다. 실제 기압과 계산 결과는 터무니없이 달랐습니다. 
+                  초기 데이터 처리 기술이 부족했기 때문입니다. 하지만 그는 포기하지 않고 
+                  1922년 자신의 저서에서 기상천외한 상상을 펼칩니다.
+                </p>
+              </div>
+            </div>
+
+            {/* Story Card 3 */}
+            <div className="flex flex-col md:flex-row gap-6 bg-slate-800/50 p-6 rounded-2xl border border-slate-700 hover:border-green-500 transition-colors">
+              <div className="md:w-1/4 flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-slate-700 pb-4 md:pb-0 md:pr-6">
+                <span className="text-4xl font-bold text-slate-600">03</span>
+                <span className="text-sm text-slate-400 mt-2">위대한 유산</span>
+              </div>
+              <div className="md:w-3/4">
+                <h3 className="text-xl font-bold text-green-400 mb-2">예보 공장 (Forecast Factory)</h3>
+                <blockquote className="border-l-4 border-green-500 pl-4 italic text-slate-400 my-4 bg-black/20 py-2 pr-2 rounded-r">
+                  "상상해보라. 거대한 원형 경기장에 64,000명의 계산원이 앉아 있다. 
+                  지휘자가 지휘봉을 흔들면 각 구역의 사람들은 옆 사람에게 계산 결과를 넘긴다..."
+                </blockquote>
+                <p className="text-slate-300 leading-relaxed">
+                  당시에는 공상과학이라 비웃음 당했던 이 '6만 4천 명의 사람'은 
+                  오늘날 <strong>슈퍼컴퓨터의 CPU 코어</strong>가 되어 매일 우리의 날씨를 예측하고 있습니다.
+                  여러분이 지금 배우는 무한급수는 바로 그 미래를 만든 벽돌입니다.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-16 text-center">
+            <div className="inline-block bg-white/10 backdrop-blur rounded-full px-6 py-3 text-sm font-medium border border-white/20">
+              <span className="mr-2">💡</span>
+              실패는 성공의 어머니가 아니라, <strong>미래의 설계도</strong>입니다.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-slate-900 text-slate-500 py-12 border-t border-slate-800">
+        <div className="max-w-6xl mx-auto px-4 text-center">
+          <div className="flex justify-center items-center gap-2 mb-4">
+            <Wind className="h-5 w-5 text-slate-600" />
+            <span className="font-semibold text-slate-400">MeteoMath Project</span>
+          </div>
+          <p className="text-sm mb-2">학부생을 위한 수리물리학 & 기상학 교육 자료</p>
+          <p className="text-xs opacity-50">Designed for Educational Inspiration</p>
+        </div>
+      </footer>
+    </div>
+  );
+};
+
+export default App;
